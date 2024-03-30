@@ -1,0 +1,297 @@
+-- data insert from webscraping --
+
+SET GLOBAL local_infile=1;
+LOAD DATA LOCAL INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/baseball_research/database_files/team_standings_main.csv"
+INTO TABLE baseball_research.team_standings_main
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n' 
+IGNORE 1 ROWS;
+
+SET GLOBAL local_infile=1;
+LOAD DATA LOCAL INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/baseball_research/database_files/team_venue_factor.csv"
+INTO TABLE baseball_research.team_venue_factor
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n' 
+IGNORE 1 ROWS;
+
+SET GLOBAL local_infile=1;
+LOAD DATA LOCAL INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/baseball_research/database_files/calc_linear_weights.csv"
+INTO TABLE baseball_research.calc_linear_weights
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n' 
+IGNORE 1 ROWS;
+
+SET GLOBAL local_infile=1;
+LOAD DATA LOCAL INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/baseball_research/database_files/player_hitting_main.csv"
+INTO TABLE baseball_research.player_hitting_main
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n' 
+IGNORE 1 ROWS;
+
+SET GLOBAL local_infile=1;
+LOAD DATA LOCAL INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/baseball_research/database_files/player_pitching_main.csv"
+INTO TABLE baseball_research.player_pitching_main
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n' 
+IGNORE 1 ROWS;
+
+SET GLOBAL local_infile=1;
+LOAD DATA LOCAL INFILE "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/baseball_research/database_files/player_fielding_main.csv"
+INTO TABLE baseball_research.player_fielding_main
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n' 
+IGNORE 1 ROWS;
+
+-- hitting data --
+  
+INSERT INTO baseball_research.player_hitting_rate (player_id,player_name,team_id,season_id,age,pa_per_g,avg,obp,slg,ops,bb_pct,k_pct,sb_success_pct,bip_pct,barrel_pct,hard_hit_pct)
+SELECT a.player_id,
+a.player_name,
+a.team_id,
+a.season_id,
+a.age,
+(SUM(a.pa)/SUM(a.g)),
+((SUM(a.1b)+SUM(a.2b)+SUM(a.3b)+(SUM(a.hr)))/SUM(a.ab)),
+((SUM(a.1b)+SUM(a.2b)+SUM(a.3b)+(SUM(a.hr))+SUM(a.bb)+SUM(a.ibb)+SUM(a.hbp))/(SUM(a.pa)-SUM(a.sh))),
+((SUM(a.1b)+(SUM(a.2b)*2)+(SUM(a.3b)*3)+(SUM(a.hr)*4))/SUM(a.ab)),
+(((SUM(a.1b)+SUM(a.2b)+SUM(a.3b)+(SUM(a.hr))+SUM(a.bb)+SUM(a.ibb)+SUM(a.hbp))/(SUM(a.pa)-SUM(a.sh)))+((SUM(a.1b)+(SUM(a.2b)*2)+(SUM(a.3b)*3)+(SUM(a.hr)*4))/SUM(a.ab))),
+(SUM(a.bb)+SUM(a.ibb))/SUM(a.pa),
+SUM(a.so)/SUM(a.pa),
+SUM(a.sb)/(SUM(a.sb)+SUM(a.cs)),
+SUM(a.bip)/SUM(a.pa),
+SUM(a.barrel_count)/SUM(a.pa),
+SUM(a.hard_hit_count)/SUM(a.pa)
+FROM player_hitting_main AS a
+GROUP BY a.player_id,a.player_name,a.team_id,a.season_id,a.age;
+
+INSERT INTO player_hitting_main_x (
+player_id, 
+player_name, 
+season_id,
+age,
+g,
+pa,
+ab,
+1b,
+2b,
+3b, 
+hr, 
+bb, 
+ibb, 
+hbp, 
+sf, 
+sh,
+so, 
+r, 
+rbi, 
+sb, 
+cs, 
+bip, 
+exit_velo,
+launch_ang, 
+barrel_count,
+hard_hit_count)
+SELECT a.player_id,
+a.player_name,
+a.season_id,
+AVG(a.age),
+SUM(a.g),
+SUM(a.pa),
+SUM(a.ab),
+SUM(a.1b),
+SUM(a.2b),
+SUM(a.3b),
+SUM(a.hr),
+SUM(a.bb),
+SUM(a.ibb),
+SUM(a.hbp),
+SUM(a.sf),
+SUM(a.sh),
+SUM(a.so),
+SUM(a.r),
+SUM(a.rbi),
+SUM(a.sb),
+SUM(a.cs),
+SUM(a.bip),
+AVG(a.exit_velo),
+AVG(a.launch_ang),
+SUM(a.barrel_count),
+SUM(a.hard_hit_count)
+FROM player_hitting_main AS a
+GROUP BY a.player_id,a.player_name,a.season_id;
+
+INSERT INTO baseball_research.player_hitting_rate_x (player_id,player_name,season_id,age,pa_per_g,avg,obp,slg,ops,bb_pct,k_pct,sb_success_pct,bip_pct,barrel_pct,hard_hit_pct)
+SELECT a.player_id,
+a.player_name,
+a.season_id,
+a.age,
+(SUM(a.pa)/SUM(a.g)),
+((SUM(a.1b)+SUM(a.2b)+SUM(a.3b)+(SUM(a.hr)))/SUM(a.ab)),
+((SUM(a.1b)+SUM(a.2b)+SUM(a.3b)+(SUM(a.hr))+SUM(a.bb)+SUM(a.ibb)+SUM(a.hbp))/(SUM(a.pa)-SUM(a.sh))),
+((SUM(a.1b)+(SUM(a.2b)*2)+(SUM(a.3b)*3)+(SUM(a.hr)*4))/SUM(a.ab)),
+(((SUM(a.1b)+SUM(a.2b)+SUM(a.3b)+(SUM(a.hr))+SUM(a.bb)+SUM(a.ibb)+SUM(a.hbp))/(SUM(a.pa)-SUM(a.sh)))+((SUM(a.1b)+(SUM(a.2b)*2)+(SUM(a.3b)*3)+(SUM(a.hr)*4))/SUM(a.ab))),
+(SUM(a.bb)+SUM(a.ibb))/SUM(a.pa),
+SUM(a.so)/SUM(a.pa),
+SUM(a.sb)/(SUM(a.sb)+SUM(a.cs)),
+SUM(a.bip)/SUM(a.pa),
+SUM(a.barrel_count)/SUM(a.pa),
+SUM(a.hard_hit_count)/SUM(a.pa)
+FROM player_hitting_main_x AS a
+GROUP BY a.player_id,a.player_name,a.season_id,a.age;
+
+INSERT INTO team_hitting_main (
+team_id, 
+season_id,
+age,
+g,
+pa,
+ab,
+1b,
+2b,
+3b, 
+hr, 
+bb, 
+ibb, 
+hbp, 
+sf, 
+sh,
+so, 
+r, 
+rbi, 
+sb, 
+cs, 
+bip, 
+barrel_count,
+hard_hit_count)
+SELECT a.team_id,
+a.season_id,
+AVG(a.age),
+SUM(a.g),
+SUM(a.pa),
+SUM(a.ab),
+SUM(a.1b),
+SUM(a.2b),
+SUM(a.3b),
+SUM(a.hr),
+SUM(a.bb),
+SUM(a.ibb),
+SUM(a.hbp),
+SUM(a.sf),
+SUM(a.sh),
+SUM(a.so),
+SUM(a.r),
+SUM(a.rbi),
+SUM(a.sb),
+SUM(a.cs),
+SUM(a.bip),
+SUM(a.barrel_count),
+SUM(a.hard_hit_count)
+FROM player_hitting_main AS a
+GROUP BY a.team_id,a.season_id;
+
+INSERT INTO baseball_research.team_hitting_rate (team_id,season_id,age,pa_per_g,avg,obp,slg,ops,bb_pct,k_pct,sb_success_pct,bip_pct,barrel_pct,hard_hit_pct)
+SELECT a.team_id,
+a.season_id,
+AVG(a.age),
+(SUM(a.pa)/SUM(a.g)),
+((SUM(a.1b)+SUM(a.2b)+SUM(a.3b)+(SUM(a.hr)))/SUM(a.ab)),
+((SUM(a.1b)+SUM(a.2b)+SUM(a.3b)+(SUM(a.hr))+SUM(a.bb)+SUM(a.ibb)+SUM(a.hbp))/(SUM(a.pa)-SUM(a.sh))),
+((SUM(a.1b)+(SUM(a.2b)*2)+(SUM(a.3b)*3)+(SUM(a.hr)*4))/SUM(a.ab)),
+(((SUM(a.1b)+SUM(a.2b)+SUM(a.3b)+(SUM(a.hr))+SUM(a.bb)+SUM(a.ibb)+SUM(a.hbp))/(SUM(a.pa)-SUM(a.sh)))+((SUM(a.1b)+(SUM(a.2b)*2)+(SUM(a.3b)*3)+(SUM(a.hr)*4))/SUM(a.ab))),
+(SUM(a.bb)+SUM(a.ibb))/SUM(a.pa),
+SUM(a.so)/SUM(a.pa),
+SUM(a.sb)/(SUM(a.sb)+SUM(a.cs)),
+SUM(a.bip)/SUM(a.pa),
+SUM(a.barrel_count)/SUM(a.pa),
+SUM(a.hard_hit_count)/SUM(a.pa)
+FROM team_hitting_main AS a
+GROUP BY team_id,a.season_id;
+
+-- pitching data --
+
+INSERT INTO baseball_research.player_pitching_rate (player_id,player_name,team_id,season_id,age,tbf_per_g,ip_per_start,ip_per_relief,on_base_per_ip,total_bases_per_ip,bb_pct,k_pct,era,bip_pct,barrel_pct,hard_hit_pct)
+SELECT a.player_id,
+a.player_name,
+a.team_id,
+a.season_id,
+a.age,
+(SUM(a.tbf)/SUM(a.g)),
+(SUM(a.start_ip)/SUM(a.gs)),
+(SUM(a.relief_ip)/(SUM(a.g)-SUM(a.gs))),
+((SUM(a.1b)+SUM(2b)+SUM(3b)+SUM(a.hr)+SUM(a.bb)+SUM(a.ibb)+SUM(a.hbp))/(SUM(a.start_ip)+SUM(a.relief_ip))),
+((SUM(a.1b)+(SUM(a.2b)*2)+(SUM(a.3b)*3)+(SUM(a.hr)*4))/(SUM(a.start_ip)+SUM(a.relief_ip))),
+(SUM(a.bb)+SUM(a.ibb))/SUM(a.tbf),
+SUM(a.so)/SUM(a.tbf),
+((SUM(a.er)*9)/(SUM(start_ip)+SUM(relief_ip))),
+SUM(a.bip)/SUM(a.tbf),
+SUM(a.barrel_count)/SUM(a.tbf),
+SUM(a.hard_hit_count)/SUM(a.tbf)
+FROM player_pitching_main AS a
+GROUP BY a.player_id,a.player_name,a.team_id,a.season_id,a.age;
+
+INSERT INTO team_pitching_main (
+team_id, 
+season_id,
+age,
+tbf,
+start_ip,
+relief_ip,
+pitches,
+g,
+gs,
+1b,
+2b,
+3b, 
+hr, 
+bb, 
+ibb, 
+hbp, 
+so, 
+r, 
+er, 
+bip, 
+barrel_count,
+hard_hit_count)
+SELECT a.team_id,
+a.season_id,
+AVG(a.age),
+SUM(a.tbf),
+SUM(a.start_ip),
+SUM(a.relief_ip),
+SUM(a.pitches),
+SUM(a.g),
+SUM(a.gs),
+SUM(a.1b),
+SUM(a.2b),
+SUM(a.3b),
+SUM(a.hr),
+SUM(a.bb),
+SUM(a.ibb),
+SUM(a.hbp),
+SUM(a.so),
+SUM(a.r),
+SUM(a.er),
+SUM(a.bip),
+SUM(a.barrel_count),
+SUM(a.hard_hit_count)
+FROM player_pitching_main AS a
+GROUP BY a.team_id,a.season_id;
+
+INSERT INTO baseball_research.team_pitching_rate (team_id,season_id,age,tbf_per_g,ip_per_start,ip_per_relief,on_base_per_ip,total_bases_per_ip,bb_pct,k_pct,era,bip_pct,barrel_pct,hard_hit_pct)
+SELECT 
+a.team_id,
+a.season_id,
+a.age,
+(SUM(a.tbf)/SUM(a.g)),
+(SUM(a.start_ip)/SUM(a.gs)),
+(SUM(a.relief_ip)/(SUM(a.g)-SUM(a.gs))),
+((SUM(a.1b)+SUM(2b)+SUM(3b)+SUM(a.hr)+SUM(a.bb)+SUM(a.ibb)+SUM(a.hbp))/(SUM(a.start_ip)+SUM(a.relief_ip))),
+((SUM(a.1b)+(SUM(a.2b)*2)+(SUM(a.3b)*3)+(SUM(a.hr)*4))/(SUM(a.start_ip)+SUM(a.relief_ip))),
+(SUM(a.bb)+SUM(a.ibb))/SUM(a.tbf),
+SUM(a.so)/SUM(a.tbf),
+((SUM(a.er)*9)/(SUM(start_ip)+SUM(relief_ip))),
+SUM(a.bip)/SUM(a.tbf),
+SUM(a.barrel_count)/SUM(a.tbf),
+SUM(a.hard_hit_count)/SUM(a.tbf)
+FROM team_pitching_main AS a
+GROUP BY a.team_id,a.season_id,a.age;
