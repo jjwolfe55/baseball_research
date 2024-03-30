@@ -1,1 +1,13 @@
-
+CREATE TABLE baseball_research.team_standings_main (
+franchise_id SMALLINT UNSIGNED NOT NULL,
+team_id CHAR(3) NOT NULL,
+team_name VARCHAR(30) NOT NULL,
+league CHAR(2) NOT NULL,
+division CHAR(10) NOT NULL,
+season_id SMALLINT UNSIGNED NOT NULL,
+g SMALLINT UNSIGNED,
+w SMALLINT UNSIGNED,
+l SMALLINT UNSIGNED,
+w_pct DECIMAL(4,3) UNSIGNED,
+PRIMARY KEY (team_id,season_id,franchise_id)
+);
