@@ -1,1 +1,108 @@
+-- player hitting by season with team splits --
+
+CREATE TABLE baseball_research.player_hitting_main (
+player_id INT UNSIGNED NOT NULL,
+player_name VARCHAR(45) NOT NULL,
+team_id CHAR(3) NOT NULL,
+season_id SMALLINT UNSIGNED NOT NULL,
+age TINYINT UNSIGNED,
+g INT UNSIGNED,
+pa INT UNSIGNED,
+ab INT UNSIGNED,
+1b INT UNSIGNED,
+2b INT UNSIGNED,
+3b INT UNSIGNED,
+hr INT UNSIGNED,
+bb INT UNSIGNED,
+ibb INT UNSIGNED,
+hbp INT UNSIGNED,
+sf INT UNSIGNED,
+sh INT UNSIGNED,
+so INT UNSIGNED,
+r INT UNSIGNED,
+rbi INT UNSIGNED,
+sb INT UNSIGNED,
+cs INT UNSIGNED,
+bip INT UNSIGNED,
+exit_velo DECIMAL(5,2) UNSIGNED,
+launch_ang DECIMAL(5,2) SIGNED,
+barrel_count INT UNSIGNED,
+hard_hit_count INT UNSIGNED,
+PRIMARY KEY (player_id, team_id, season_id)
+);
+
+-- player hitting by season with team splits --
+
+CREATE TABLE baseball_research.player_hitting_rate (
+player_id INT UNSIGNED NOT NULL,
+player_name VARCHAR(45) NOT NULL,
+team_id CHAR(3) NOT NULL,
+season_id SMALLINT UNSIGNED NOT NULL,
+age TINYINT UNSIGNED,
+pa_per_g DECIMAL (3,2),
+avg DECIMAL(4,3),
+obp DECIMAL (4,3),
+slg DECIMAL (4,3),
+ops DECIMAL (4,3),
+bb_pct DECIMAL (3,2),
+k_pct DECIMAL (3,2),
+sb_success_pct DECIMAL (3,2),
+bip_pct DECIMAL (3,2),
+barrel_pct DECIMAL (3,2),
+hard_hit_pct DECIMAL (3,2),
+PRIMARY KEY (player_id, team_id, season_id)
+
+-- player hitting by season --
+
+CREATE TABLE baseball_research.player_hitting_main_x (
+player_id INT UNSIGNED NOT NULL,
+player_name VARCHAR(45) NOT NULL,
+season_id SMALLINT UNSIGNED NOT NULL,
+age TINYINT UNSIGNED,
+g INT UNSIGNED,
+pa INT UNSIGNED,
+ab INT UNSIGNED,
+1b INT UNSIGNED,
+2b INT UNSIGNED,
+3b INT UNSIGNED,
+hr INT UNSIGNED,
+bb INT UNSIGNED,
+ibb INT UNSIGNED,
+hbp INT UNSIGNED,
+sf INT UNSIGNED,
+sh INT UNSIGNED,
+so INT UNSIGNED,
+r INT UNSIGNED,
+rbi INT UNSIGNED,
+sb INT UNSIGNED,
+cs INT UNSIGNED,
+bip INT UNSIGNED,
+exit_velo DECIMAL(5,2) UNSIGNED,
+launch_ang DECIMAL(5,2) SIGNED,
+barrel_count INT UNSIGNED,
+hard_hit_count INT UNSIGNED,
+PRIMARY KEY (player_id, season_id)
+);
+
+-- player hitting by season --
+
+CREATE TABLE baseball_research.player_hitting_rate_x (
+player_id INT UNSIGNED NOT NULL,
+player_name VARCHAR(45) NOT NULL,
+season_id SMALLINT UNSIGNED NOT NULL,
+age TINYINT UNSIGNED,
+pa_per_g DECIMAL (3,2),
+avg DECIMAL(4,3),
+obp DECIMAL (4,3),
+slg DECIMAL (4,3),
+ops DECIMAL (4,3),
+bb_pct DECIMAL (3,2),
+k_pct DECIMAL (3,2),
+sb_success_pct DECIMAL (3,2),
+bip_pct DECIMAL (3,2),
+barrel_pct DECIMAL (3,2),
+hard_hit_pct DECIMAL (3,2),
+PRIMARY KEY (player_id,season_id)
+);
+
 
