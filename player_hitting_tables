@@ -1,5 +1,3 @@
--- player hitting by season with team splits --
-
 CREATE TABLE baseball_research.player_hitting_main (
 player_id INT UNSIGNED NOT NULL,
 player_name VARCHAR(45) NOT NULL,
@@ -31,8 +29,6 @@ hard_hit_count INT UNSIGNED,
 PRIMARY KEY (player_id, team_id, season_id)
 );
 
--- player hitting by season with team splits --
-
 CREATE TABLE baseball_research.player_hitting_rate (
 player_id INT UNSIGNED NOT NULL,
 player_name VARCHAR(45) NOT NULL,
@@ -51,8 +47,6 @@ bip_pct DECIMAL (3,2),
 barrel_pct DECIMAL (3,2),
 hard_hit_pct DECIMAL (3,2),
 PRIMARY KEY (player_id, team_id, season_id)
-
--- player hitting by season --
 
 CREATE TABLE baseball_research.player_hitting_main_x (
 player_id INT UNSIGNED NOT NULL,
@@ -83,8 +77,6 @@ barrel_count INT UNSIGNED,
 hard_hit_count INT UNSIGNED,
 PRIMARY KEY (player_id, season_id)
 );
-
--- player hitting by season --
 
 CREATE TABLE baseball_research.player_hitting_rate_x (
 player_id INT UNSIGNED NOT NULL,
